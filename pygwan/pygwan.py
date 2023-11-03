@@ -32,7 +32,7 @@ class WhatsApp(object):
         self.token = token
         self.phone_number_id = phone_number_id
         self.base_url = "https://graph.facebook.com/v17.0"
-        self.v15_base_url = "https://graph.facebook.com/v17.0"
+        self.v17_base_url = "https://graph.facebook.com/v17.0"
         self.url = f"{self.base_url}/{phone_number_id}/messages"
 
         self.headers = {
@@ -41,7 +41,7 @@ class WhatsApp(object):
         }
 
     def send_message(
-        self, message, recipient_id, recipient_type="individual", preview_url=True
+        self, message: str, recipient_id: str, recipient_type="individual", preview_url=True
     ):
         """
          Sends a text message to a WhatsApp user
@@ -108,7 +108,7 @@ class WhatsApp(object):
         logging.error(f"Response: {r.json()}")
         return r.json()
 
-    def send_template(self, template, recipient_id, components, lang: str = "en_US"):
+    def send_template(self, template, recipient_id: str, components, lang: str = "en_US"):
         """
         Sends a template message to a WhatsApp user, Template messages can either be;
             1. Text template
@@ -580,7 +580,7 @@ class WhatsApp(object):
         }
         logging.info(f"Marking message {message_id} as read")
         response = requests.post(
-            f"{self.v15_base_url}/{self.phone_number_id}/messages",
+            f"{self.v17_base_url}/{self.phone_number_id}/messages",
             headers=headers,
             json=json_data,
         ).json()
@@ -619,7 +619,7 @@ class WhatsApp(object):
         }
         logging.info(f"Marking message {message_id} as read")
         requests.post(
-            f"{self.v15_base_url}/{self.phone_number_id}/messages",
+            f"{self.v17_base_url}/{self.phone_number_id}/messages",
             headers=headers,
             json=json_data,
         ).json()
