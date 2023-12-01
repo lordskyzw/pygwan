@@ -65,7 +65,7 @@ image_link = "https://example.com/image.jpg"
 whatsapp.send_image(image_link, "recipient_phone_number")
 ```
 
-## Documentation
+
 
 For more detailed usage and information, please refer to the official documentation in the code lol
 
