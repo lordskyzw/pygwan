@@ -1,5 +1,5 @@
 """
-official python wrapper for the WhatsApp Cloud API by Tarmica Chiwara
+This is the second iteration of the unofficial python wrapper for the WhatsApp Cloud API by Tarmica Chiwara
 """
 from __future__ import annotations
 import requests
@@ -7,7 +7,6 @@ import logging
 import warnings
 from colorama import Fore, Style
 from typing import Dict, Any, Union
-
 
 # Setup logging
 logging.getLogger(__name__).addHandler(logging.NullHandler())
@@ -522,6 +521,9 @@ class WhatsApp(object):
 
         Args:
             data[dict]: The data received from the webhook
+
+        Returns:
+            this returns another dictionary with the values of the changed fields
         """
         return data["entry"][0]["changes"][0]["value"]
 
