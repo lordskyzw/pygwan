@@ -2,12 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="pygwan",
-    version="0.1.3",
+    version="0.1.4",
     packages=find_packages(),
-    description="We are so very very back! This is my very own python sdk for the whatsapp cloud api",
+    description="WhatsApp Cloud API is complicated, Twilio is expensive, PyGwan is the opposite of both. Free & Intuitive! ~ Tarmica Chiwara.",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
-    author="Tarmica Sean Chiwara",
+    author="Tarmica Chiwara",
     author_email="tarimicac+pypi@gmail.com",
     license="MIT",
     url="https://github.com/lordskyzw/pygwan",

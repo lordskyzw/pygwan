@@ -1,3 +1,4 @@
 build/
 dist/
 pygwan.egg-info/
+pygwanenv/

@@ -1,6 +1,6 @@
 # Pygwan
 
-Unofficial Python wrapper for the WhatsApp Cloud API by Tarmica Chiwara.
+Unofficial Python wrapper for the WhatsApp Cloud API by <b>[Tarmica Chiwara](https://github.com/lordskyzw)</b>.
 
 ## Installation
 
@@ -64,7 +64,6 @@ Send an image message using the `send_image` method:
 image_link = "https://example.com/image.jpg"
 whatsapp.send_image(image_link, "recipient_phone_number")
 ```
-
 
 
 For more detailed usage and information, please refer to the official documentation in the code lol
