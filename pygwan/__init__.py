@@ -35,6 +35,8 @@ class WhatsApp(object):
             "Content-Type": "application/json",
             "Authorization": "Bearer {}".format(self.token),
         }
+    
+    
 
     def send_message(
         self, message, recipient_id, recipient_type="individual", preview_url=True
@@ -56,22 +58,47 @@ class WhatsApp(object):
             >>> whatsapp.send_message("Hello World", "5511999999999", preview_url=False)
 
         """
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": recipient_type,
-            "to": recipient_id,
-            "type": "text",
-            "text": {"preview_url": preview_url, "body": message},
-        }
-        logging.info(f"Sending message to {recipient_id}")
-        r = requests.post(f"{self.url}", headers=self.headers, json=data)
-        if r.status_code == 200:
-            logging.info(f"Message sent to {recipient_id}")
+        # if the message length is greater than 4096 characters, split the message into multiple messages
+
+        if len(message) > 4096:
+            messages = [
+                message[i : i + 4096] for i in range(0, len(message), 4096)
+            ]
+            for msg in messages:
+                data = {
+                    "messaging_product": "whatsapp",
+                    "recipient_type": recipient_type,
+                    "to": recipient_id,
+                    "type": "text",
+                    "text": {"preview_url": preview_url, "body": msg},
+                }
+                logging.info(f"Sending message to {recipient_id}")
+                r = requests.post(f"{self.url}", headers=self.headers, json=data)
+                if r.status_code == 200:
+                    logging.info(f"Message sent to {recipient_id}")
+                    return r.json()
+                logging.info(f"Message not sent to {recipient_id}")
+                logging.info(f"Status code: {r.status_code}")
+                logging.error(f"Response: {r.json()}")
+                return r.json()
+
+        else:
+            data = {
+                "messaging_product": "whatsapp",
+                "recipient_type": recipient_type,
+                "to": recipient_id,
+                "type": "text",
+                "text": {"preview_url": preview_url, "body": message},
+            }
+            logging.info(f"Sending message to {recipient_id}")
+            r = requests.post(f"{self.url}", headers=self.headers, json=data)
+            if r.status_code == 200:
+                logging.info(f"Message sent to {recipient_id}")
+                return r.json()
+            logging.info(f"Message not sent to {recipient_id}")
+            logging.info(f"Status code: {r.status_code}")
+            logging.error(f"Response: {r.json()}")
             return r.json()
-        logging.info(f"Message not sent to {recipient_id}")
-        logging.info(f"Status code: {r.status_code}")
-        logging.error(f"Response: {r.json()}")
-        return r.json()
 
     def reply_to_message(
         self, message_id: str, recipient_id: str, message: str, preview_url: bool = True
@@ -85,21 +112,74 @@ class WhatsApp(object):
             message[str]: Message to be sent to the user
             preview_url[bool]: Whether to send a preview url or not
         """
+        if len(message) > 4096:
+            messages = [
+                message[i : i + 4096] for i in range(0, len(message), 4096)
+            ]
+            for msg in messages:
+                data = {
+                    "messaging_product": "whatsapp",
+                    "recipient_type": "individual",
+                    "to": recipient_id,
+                    "type": "text",
+                    "context": {"message_id": message_id},
+                    "text": {"preview_url": preview_url, "body": msg},
+                }
+                logging.info(f"Replying to {message_id}")
+                r = requests.post(f"{self.url}", headers=self.headers, json=data)
+                if r.status_code == 200:
+                    logging.info(f"Message sent to {recipient_id}")
+                    return r.json()
+                logging.info(f"Message not sent to {recipient_id}")
+                logging.info(f"Status code: {r.status_code}")
+                logging.error(f"Response: {r.json()}")
+                return r.json()
+
+        else:
+            data = {
+                "messaging_product": "whatsapp",
+                "recipient_type": "individual",
+                "to": recipient_id,
+                "type": "text",
+                "context": {"message_id": message_id},
+                "text": {"preview_url": preview_url, "body": message},
+            }
+
+            logging.info(f"Replying to {message_id}")
+            r = requests.post(f"{self.url}", headers=self.headers, json=data)
+            if r.status_code == 200:
+                logging.info(f"Message sent to {recipient_id}")
+                return r.json()
+            logging.info(f"Message not sent to {recipient_id}")
+            logging.info(f"Status code: {r.status_code}")
+            logging.error(f"Response: {r.json()}")
+            return r.json()
+        
+    def send_reaction(self, message_id: str, reaction: str, recipient_id: str):
+        """
+        Sends a reaction to a message
+
+        Args:
+            message_id[str]: Message id of the message to be reacted to
+            reaction[str]: Unicode escape sequence emoji to be sent to the user
+            recipient_id[str]: Phone number of the user with country code wihout +
+        """
         data = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
             "to": recipient_id,
-            "type": "text",
-            "context": {"message_id": message_id},
-            "text": {"preview_url": preview_url, "body": message},
+            "type": "reaction",
+            "reaction": {
+                "message_id": message_id,
+                "emoji": reaction
+            }
         }
-
-        logging.info(f"Replying to {message_id}")
-        r = requests.post(f"{self.url}", headers=self.headers, json=data)
+        logging.info(f"Sending reaction to {recipient_id}")
+        r = requests.post(self.url, headers=self.headers, json=data)
         if r.status_code == 200:
-            logging.info(f"Message sent to {recipient_id}")
+            logging.info(f"Reaction sent to {recipient_id}")
             return r.json()
-        logging.info(f"Message not sent to {recipient_id}")
+        logging.info(f"Reaction not sent to {recipient_id}")
         logging.info(f"Status code: {r.status_code}")
         logging.error(f"Response: {r.json()}")
         return r.json()
@@ -326,6 +406,11 @@ class WhatsApp(object):
 
         Args:
                button[dict]: A dictionary containing the button data
+        
+        Example:
+            >>> from pygwan import WhatsApp
+            >>> whatsapp = WhatsApp(token, phone_number_id)
+            >>> whatsapp.create_button({"header": "Choose a package:", "body": "Select from below:", "footer": "Footer text", "action": {"buttons": [{"id": "1", "title": "Option 1"}, {"id": "2", "title": "Option 2"}]}})
         """
         data = {"type": "list", "action": button.get("action")}
         if button.get("header"):
@@ -343,8 +428,10 @@ class WhatsApp(object):
         Args:
             button[dict]: A dictionary containing the button data(rows-title may not exceed 20 characters)
             recipient_id[str]: Phone number of the user with country code wihout +
-
-        check https://github.com/Neurotech-HQ/heyoo#sending-interactive-reply-buttons for an example.
+        Example:
+            >>> from pygwan import WhatsApp
+            >>> whatsapp = WhatsApp(token, phone_number_id)
+            >>> whatsapp.send_button({"header": "Choose a package:", "body": "Select from below:", "footer": "Footer text", "action": {"buttons": [{"id": "1", "title": "Option 1"}, {"id": "2", "title": "Option 2"}]}}, "5511999999999")
         """
         data = {
             "messaging_product": "whatsapp",
@@ -474,6 +561,78 @@ class WhatsApp(object):
             return response.json()
         logging.error(f"List message not sent to {recipient_id}: {response.text}")
         return response.json()
+
+    def send_cta_url_button(self, recipient_id, button_text, url, message=None):
+        """
+        Sends a call-to-action URL button to a WhatsApp user.
+
+        Args:
+            recipient_id (str): Phone number of the recipient with country code without +.
+            title (str): Title of the button.
+            url (str): URL to open when the button is clicked.
+
+        Example usage:
+            >>> whatsapp.send_cta_url_button("1234567890", "Visit our website", "https://example.com")
+        """
+        body = {"body": {"text": message}} if message else {}
+        data = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": recipient_id,
+            "type": "interactive",
+            "interactive": {
+                "type": "cta_url",
+                **body,
+                "action": {
+                    "name": "cta_url",
+                    "parameters": {
+                        "display_text": button_text,
+                        "url": url
+                    }
+                }
+            }
+        }
+
+        response = requests.post(self.url, headers=self.headers, json=data)
+        if response.status_code == 200:
+            logging.info(f"CTA URL button sent to {recipient_id}")
+            return response.json()
+        logging.error(f"CTA URL button not sent to {recipient_id}: {response.text}")
+        return response.json()
+
+    def request_location(self, recipient_id: str, message: str):
+        """
+        Sends a request for the user's location.
+
+        Args:
+            recipient_id (str): Phone number of the recipient with country code without +.
+            message (str): Message to send with the location request.
+        """
+        data = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "type": "interactive",
+            "to": recipient_id,
+            "interactive": {
+                "type": "location_request_message",
+                "body": {
+                "text": message
+                },
+                "action": {
+                "name": "send_location"
+                }
+            }
+        }
+        if len(message) >= 1025:
+            raise ValueError("Message length should not exceed 1024 characters")
+
+        response = requests.post(self.url, headers=self.headers, json=data)
+        if response.status_code == 200:
+            logging.info(f"Location request sent to {recipient_id}")
+            return response.json()
+        logging.error(f"Location request not sent to {recipient_id}: {response.text}")
+        return response.json()
+
 
     def download_media(
         self, media_url: str, mime_type: str, file_path: str = "temp"
