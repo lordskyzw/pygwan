@@ -76,11 +76,11 @@ class WhatsApp(object):
                 r = requests.post(f"{self.url}", headers=self.headers, json=data)
                 if r.status_code == 200:
                     logging.info(f"Message sent to {recipient_id}")
-                    return r.json()
-                logging.info(f"Message not sent to {recipient_id}")
-                logging.info(f"Status code: {r.status_code}")
-                logging.error(f"Response: {r.json()}")
-                return r.json()
+                else:
+                    logging.info(f"Message not sent to {recipient_id}")
+                    logging.info(f"Status code: {r.status_code}")
+                    logging.error(f"Response: {r.json()}")
+            return r.json()
 
         else:
             data = {
@@ -129,11 +129,12 @@ class WhatsApp(object):
                 r = requests.post(f"{self.url}", headers=self.headers, json=data)
                 if r.status_code == 200:
                     logging.info(f"Message sent to {recipient_id}")
-                    return r.json()
-                logging.info(f"Message not sent to {recipient_id}")
-                logging.info(f"Status code: {r.status_code}")
-                logging.error(f"Response: {r.json()}")
-                return r.json()
+                else:
+                    logging.info(f"Message not sent to {recipient_id}")
+                    logging.info(f"Status code: {r.status_code}")
+                    logging.error(f"Response: {r.json()}")
+
+            return r.json()
 
         else:
             data = {
