@@ -80,7 +80,6 @@ class WhatsApp(object):
                     logging.info(f"Message not sent to {recipient_id}")
                     logging.info(f"Status code: {r.status_code}")
                     logging.error(f"Response: {r.json()}")
-            return r.json()
 
         else:
             data = {
@@ -94,11 +93,7 @@ class WhatsApp(object):
             r = requests.post(f"{self.url}", headers=self.headers, json=data)
             if r.status_code == 200:
                 logging.info(f"Message sent to {recipient_id}")
-                return r.json()
-            logging.info(f"Message not sent to {recipient_id}")
-            logging.info(f"Status code: {r.status_code}")
-            logging.error(f"Response: {r.json()}")
-            return r.json()
+        return r.json()
 
     def reply_to_message(
         self, message_id: str, recipient_id: str, message: str, preview_url: bool = True
@@ -134,7 +129,6 @@ class WhatsApp(object):
                     logging.info(f"Status code: {r.status_code}")
                     logging.error(f"Response: {r.json()}")
 
-            return r.json()
 
         else:
             data = {
@@ -150,11 +144,8 @@ class WhatsApp(object):
             r = requests.post(f"{self.url}", headers=self.headers, json=data)
             if r.status_code == 200:
                 logging.info(f"Message sent to {recipient_id}")
-                return r.json()
-            logging.info(f"Message not sent to {recipient_id}")
-            logging.info(f"Status code: {r.status_code}")
-            logging.error(f"Response: {r.json()}")
-            return r.json()
+        
+        return r.json()
         
     def send_reaction(self, message_id: str, reaction: str, recipient_id: str):
         """

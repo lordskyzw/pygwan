@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pygwan"
-version = "0.1.4"
+version = "0.1.6"
 authors = [{ name = "Tarmica Chiwara", email = "tarimicac@gmail.com" }]
 description = "Official Python wrapper for the WhatsApp Cloud API by Tarmica Chiwara"
 readme = "README.md"
@@ -18,3 +18,6 @@ keywords = ["whatsapp", "api", "messaging", "chatbot", "opensource"]
 
 [project.urls]
 Repository = "https://github.com/lordskyzw/pygwan"
+
+
+

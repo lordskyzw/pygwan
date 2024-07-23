@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pygwan",
-    version="0.1.4",
+    version="0.1.6",
     packages=find_packages(),
     description="WhatsApp Cloud API is complicated, Twilio is expensive, PyGwan is the opposite of both. Free & Intuitive! ~ Tarmica Chiwara.",
     long_description=open('README.md').read(),
