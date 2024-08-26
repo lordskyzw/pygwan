@@ -591,6 +591,35 @@ class WhatsApp(object):
             return response.json()
         logging.error(f"CTA URL button not sent to {recipient_id}: {response.text}")
         return response.json()
+    
+    def send_document(self, document_url: str, recipient_id: str, caption: str = "", filename: str = ""):
+        """
+        Sends a document to a WhatsApp user.
+        
+        Args:
+            document_url (str): URL of the document to send.
+            recipient_id (str): Phone number of the recipient with country code without +.
+            caption (str): Caption for the document.
+            filename (str): Name of the file. it should include the file extension.
+        """
+        data = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": recipient_id,
+            "type": "document",
+            "document": {
+                "link": document_url,
+                "caption": caption,
+                "filename": filename
+            }
+        }
+        
+        response = requests.post(self.url, headers=self.headers, json=data)
+        if response.status_code == 200:
+            logging.info(f"Document sent to {recipient_id}")
+            return response.json()
+        logging.error(f"Document not sent to {recipient_id}: {response.text}")
+        return response.json()
 
     def request_location(self, recipient_id: str, message: str):
         """
